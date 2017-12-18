@@ -1,0 +1,25 @@
+{
+  "name": "hmarquee",
+  "version": "0.1.0",
+  "description": "A horizontal scroll marquee.",
+  "scripts": {
+    "build": "webpack"
+  },
+  "homepage": "https://github.com/ttionya",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ttionya/hMarquee"
+  },
+  "bugs": {
+    "url": "https://github.com/ttionya/hMarquee/issues"
+  },
+  "keywords": [
+    "marquee"
+  ],
+  "author": "ttionya",
+  "license": "MIT",
+  "dependencies": {
+    "uglifyjs-webpack-plugin": "^1.1.4",
+    "webpack": "^3.10.0"
+  }
+}
