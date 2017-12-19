@@ -1,5 +1,7 @@
 var path = require('path'),
-  UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+  webpack = require('webpack'),
+  UglifyJsPlugin = require('uglifyjs-webpack-plugin'),
+  packageConfig = require('./package.json');
 
 module.exports = {
   entry: {
@@ -17,6 +19,8 @@ module.exports = {
           warnings: false
         }
       }
-    })
+    }),
+
+    new webpack.BannerPlugin(`Author: ${packageConfig.author}\n\nVersion: ${packageConfig.version}\n\nGitHub: ${packageConfig.repository.url}\n\nLicense: ${packageConfig.license}`)
   ]
 };
