@@ -3,7 +3,7 @@ var path = require('path'),
 
 module.exports = {
   entry: {
-    "hMarquee": "./src/index.js"
+    "hMarquee": "./src/hMarquee.js"
   },
   output: {
     path: path.resolve(__dirname, "dist"),
