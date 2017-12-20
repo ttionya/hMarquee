@@ -103,6 +103,14 @@ You can custom `m-marquee-content:before` and `m-marquee-content:after` for your
 
 Note the CSS selector priority `.m-marquee.m-marquee-fade .m-marquee-content:before|after`.
 
+### `alwaysScroll`
+
+`boolean`, default to `false`
+
+Always scroll the content.
+
+By default, no scroll, no fade effect when content width less than `m-marquee-content` container width.
+
 ### `tips`
 
 `boolean`, default to `false`
