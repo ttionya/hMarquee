@@ -1,9 +1,9 @@
 /**
  * Author: ttionya
  *
- * Time: 2017-12-19 14:19
+ * Time: 2017-12-20 23:30
  *
- * Version: 0.1.0
+ * Version: 0.2.0
  *
  * GitHub: https://github.com/ttionya/hMarquee
  *
@@ -20,6 +20,7 @@
       minShowCount: 3,
 
       fadeInOut: false,
+      alwaysScroll: false,
       tips: false,
       closeBtn: false,
 
@@ -59,6 +60,7 @@
       minShowCount = +opt.minShowCount || defaultOpt.minShowCount,
 
       isFadeInOut = !!opt.fadeInOut,
+      alwaysScroll = !!opt.alwaysScroll,
       showTips = !!opt.tips,
       showCloseBtn = !!opt.closeBtn;
 
@@ -174,15 +176,28 @@
        */
       $content.append($scroll);
 
-      var width = $scroll.width(),
+      var contentWidth = $content.width(),
+        width = $scroll.width(),
         time = width / speedPeerSec;
 
-      $scroll.css({
-        '-webkit-animation-duration': time + 's',
-                'animation-duration': time + 's',
-        '-webkit-animation-delay': delayBeforeStart + 's',
-                'animation-delay': delayBeforeStart + 's'
-      });
+      /**
+       * Always scrolling if contentWidth bigger than scroll container,
+       *
+       * or set alwaysScroll to true.
+       */
+      if (!alwaysScroll && (contentWidth >= width)) {
+        $scroll.css('padding-left', 0);
+        $marqueeContainer.removeClass('m-marquee-fade'); // Remove Fade Effect
+      }
+      else {
+        $scroll.css({
+          'padding-left': '100%',
+          '-webkit-animation-duration': time + 's',
+          'animation-duration': time + 's',
+          '-webkit-animation-delay': delayBeforeStart + 's',
+          'animation-delay': delayBeforeStart + 's'
+        });
+      }
     }, 0); // Necessary
   };
 
@@ -204,7 +219,7 @@
         + '.m-marquee.m-marquee-fade .m-marquee-content:before, .m-marquee.m-marquee-fade .m-marquee-content:after { content: ""; position: absolute; top: 0; width: 15px; height: 100%; z-index: 99999; }'
         + '.m-marquee.m-marquee-fade .m-marquee-content:before { left: 0; background-image: -webkit-linear-gradient(-90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%); background-image: linear-gradient(-90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%); }'
         + '.m-marquee.m-marquee-fade .m-marquee-content:after { right: 0; background-image: -webkit-linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%); background-image: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%); }'
-        + '.m-marquee .m-marquee-content-scroll { display: inline-block; padding-left: 100%; -webkit-animation: m-marquee 999s linear infinite; animation: m-marquee 999s linear infinite; }'
+        + '.m-marquee .m-marquee-content-scroll { display: inline-block; -webkit-animation: m-marquee 0s linear infinite; animation: m-marquee 0s linear infinite; }'
         + '.m-marquee .m-marquee-content-scroll span, .m-marquee .m-marquee-content-scroll a { padding-right: 40px; }'
         + '.m-marquee.m-marquee-close .m-marquee-inner { padding-right: 30px; }'
         + '.m-marquee.m-marquee-close .m-marquee-close-btn { position: absolute; top: 0; right: 0; width: 30px; height: 100%; }'
