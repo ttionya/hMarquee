@@ -1,9 +1,9 @@
 /**
  * Author: ttionya
  *
- * Time: 2017-12-19 14:19
+ * Time: 2017-12-20 23:30
  *
- * Version: 0.1.0
+ * Version: 0.2.0
  *
  * GitHub: https://github.com/ttionya/hMarquee
  *
