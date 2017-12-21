@@ -1,9 +1,9 @@
 /**
  * Author: ttionya
  *
- * Time: 2017-12-20 23:30
+ * Time: 2017-12-21 20:54
  *
- * Version: 0.2.0
+ * Version: 0.2.1
  *
  * GitHub: https://github.com/ttionya/hMarquee
  *
@@ -178,7 +178,7 @@
 
       var contentWidth = $content.width(),
         width = $scroll.width(),
-        time = width / speedPeerSec;
+        time;
 
       /**
        * Always scrolling if contentWidth bigger than scroll container,
@@ -190,6 +190,7 @@
         $marqueeContainer.removeClass('m-marquee-fade'); // Remove Fade Effect
       }
       else {
+        time = (width + contentWidth) / speedPeerSec;
         $scroll.css({
           'padding-left': '100%',
           '-webkit-animation-duration': time + 's',
