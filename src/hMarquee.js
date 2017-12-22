@@ -42,9 +42,9 @@
   };
 
   /**
-   * A scroll notification.
+   * A scroll notification bar.
    *
-   * Supports only one data.
+   * Only supports one notification.
    */
   $.hMarquee.notification = function (opt) {
     opt = extendOptions(opt, {
@@ -59,7 +59,7 @@
   /**
    * A notification for only once scrolling.
    *
-   * Supports only one data.
+   * Only supports one notification.
    */
   $.hMarquee.notificationOnce = function (opt) {
     opt = extendOptions(opt, {
