@@ -1,8 +1,6 @@
 /**
  * Author: ttionya
  *
- * Time: 2017-12-21 20:54
- *
  * Version: 0.2.1
  *
  * GitHub: https://github.com/ttionya/hMarquee
@@ -40,18 +38,13 @@
       once: false
     });
 
-    // Return If Invisible
-    if (!checkVisibility(opt)) {
-      return;
-    }
-
-    bindAll(opt);
+    return checkVisibility(opt) && bindAll(opt) ? opt.$c.$marqueeContainer : undefined;
   };
 
   /**
    * A scroll notification.
    *
-   * For only one data.
+   * Supports only one data.
    */
   $.hMarquee.notification = function (opt) {
     opt = extendOptions(opt, {
@@ -60,18 +53,13 @@
       once: false
     });
 
-    // Return If Invisible
-    if (!checkVisibility(opt)) {
-      return;
-    }
-
-    bindAll(opt);
+    return checkVisibility(opt) && bindAll(opt) ? opt.$c.$marqueeContainer : undefined;
   };
 
   /**
    * A notification for only once scrolling.
    *
-   * For only one data.
+   * Supports only one data.
    */
   $.hMarquee.notificationOnce = function (opt) {
     opt = extendOptions(opt, {
@@ -81,20 +69,24 @@
       once: true
     });
 
-    // Return If Invisible
-    if (!checkVisibility(opt)) {
-      return;
-    }
-
-    bindAll(opt);
+    return checkVisibility(opt) && bindAll(opt) ? opt.$c.$marqueeContainer : undefined;
   };
 
+  /**
+   * Hide && Show marquee container.
+   */
+  $.hMarquee.hide = function ($el) {
+    $el.hide();
+  };
+
+  $.hMarquee.show = function ($el) {
+    $el.show();
+  };
 
   /**
    * Bind All
    */
   function bindAll(opt) {
-    // Bind Class, Events, Data, Styles
     bindCE(opt);
     bindData(opt);
     bindStyles(opt);
@@ -115,7 +107,7 @@
     // Calc Width And Set CSS Animation
     setTimeout(function () {
       /**
-       * We should append $scroll here.
+       * We have to append $scroll here.
        *
        * Fix the bug that marquee can not be rendering on some iOS devices.
        *
@@ -152,6 +144,8 @@
         }, time * 1000);
       }
     }, 0); // Necessary
+
+    return true;
   }
 
   /**
@@ -253,22 +247,7 @@
     function bindItem($item, itemCB, name) {
       $c.$marqueeContainer.addClass('m-marquee-' + name);
 
-      $item.on('click', function (e) {
-        var close = function () {
-          $c.$marqueeContainer.hide(); // TODO Add animation
-
-          // Cancel Listener
-          $item.off('click');
-        };
-
-        // Bind Callback
-        if (typeof itemCB === 'function') {
-          itemCB(e) && close();
-        }
-        else {
-          close();
-        }
-      });
+      typeof itemCB === 'function' && $item.on('click', itemCB);
     }
 
     // Bind Item
@@ -343,5 +322,4 @@
  * TODO
  *
  * span in span
- * close
  */
