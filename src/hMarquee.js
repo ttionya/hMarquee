@@ -172,7 +172,8 @@
         + '.m-marquee.m-marquee-fade .m-marquee-content:after { right: 0; background-image: -webkit-linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%); background-image: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%); }'
 
         + '.m-marquee .m-marquee-content-scroll { display: inline-block; -webkit-animation: m-marquee 0s linear infinite; animation: m-marquee 0s linear infinite; }'
-        + '.m-marquee .m-marquee-content-scroll span, .m-marquee .m-marquee-content-scroll a { padding-right: 40px; }'
+        + '.m-marquee .m-marquee-content-scroll .m-marquee-item { padding-right: 40px; }'
+        + '.m-marquee .m-marquee-content-scroll .m-marquee-item:last-child { padding-right: 0; }'
 
         + '@-webkit-keyframes m-marquee { from { -webkit-transform: translate3d(0,0,0); transform: translate3d(0,0,0); } to { -webkit-transform: translate3d(-100%,0,0); transform: translate3d(-100%,0,0); }'
         + '@keyframes m-marquee { from { -webkit-transform: translate3d(0,0,0); transform: translate3d(0,0,0); } to { -webkit-transform: translate3d(-100%,0,0); transform: translate3d(-100%,0,0); } }';
@@ -206,15 +207,15 @@
           tmpUrl = list[i][urlField];
 
           dataText += tmpUrl ?
-            ('<a href="' + tmpUrl + '">' + tmpText + '</a>') :
-            ('<a>' + tmpText + '</a>');
+            ('<a class="m-marquee-item" href="' + tmpUrl + '">' + tmpText + '</a>') :
+            ('<a class="m-marquee-item">' + tmpText + '</a>');
         }
 
         break;
 
       case 'string': // Without Links
         for (i = 0; i < len; i++) {
-          dataText += '<span>' + list[i] + '</span>';
+          dataText += '<span class="m-marquee-item">' + list[i] + '</span>';
         }
 
         break;
@@ -317,9 +318,3 @@
     }
   }
 }(window.jQuery || window.Zepto);
-
-/**
- * TODO
- *
- * span in span
- */
