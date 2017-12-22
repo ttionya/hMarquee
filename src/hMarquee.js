@@ -1,9 +1,7 @@
 /**
  * Author: ttionya
  *
- * Time: 2017-12-21 20:54
- *
- * Version: 0.2.1
+ * Version: 1.0.0
  *
  * GitHub: https://github.com/ttionya/hMarquee
  *
@@ -21,97 +19,183 @@
 
       fadeInOut: false,
       alwaysScroll: false,
-      tips: false,
-      closeBtn: false,
+      leftItem: false,
+      rightItem: false,
 
       linkTextField: 'text',
       linkUrlField: 'url'
     },
     getMarqueeId = marqueeIdGenerator();
 
+  $.hMarquee = {};
 
-  window.hMarquee = function (opt) {
-    opt = $.extend({}, defaultOpt, opt || {});
+  /**
+   * A normal horizontal scroll marquee.
+   */
+  $.hMarquee.marquee = function (opt) {
+    opt = extendOptions(opt, {
+      onclick: null,
+      once: false
+    });
 
-    var
-      $marqueeContainer = opt.el,
-      $inner = $('<div class="m-marquee-inner"></div>'),
-      $content = $('<div class="m-marquee-content"></div>'),
-      $scroll = $('<div class="m-marquee-content-scroll"></div>'),
-      $closeBtn = $('<div class="m-marquee-close-btn"></div>'),
-      marqueeId = 'm-marquee-' + getMarqueeId(),
-      dataText = '', backgroundText = '',
-      i;
+    return checkVisibility(opt) && bindAll(opt) ? opt.$c.$marqueeContainer : undefined;
+  };
 
+  /**
+   * A scroll notification bar.
+   *
+   * Only supports one notification.
+   */
+  $.hMarquee.notification = function (opt) {
+    opt = extendOptions(opt, {
+      minShowCount: 1,
+      list: [opt.noticeText],
+      once: false
+    });
+
+    return checkVisibility(opt) && bindAll(opt) ? opt.$c.$marqueeContainer : undefined;
+  };
+
+  /**
+   * A notification for only once scrolling.
+   *
+   * Only supports one notification.
+   */
+  $.hMarquee.notificationOnce = function (opt) {
+    opt = extendOptions(opt, {
+      minShowCount: 1,
+      list: [opt.noticeText],
+      alwaysScroll: true,
+      once: true
+    });
+
+    return checkVisibility(opt) && bindAll(opt) ? opt.$c.$marqueeContainer : undefined;
+  };
+
+  /**
+   * Hide && Show marquee container.
+   */
+  $.hMarquee.hide = function ($el) {
+    $el.hide();
+  };
+
+  $.hMarquee.show = function ($el) {
+    $el.show();
+  };
+
+  /**
+   * Bind All
+   */
+  function bindAll(opt) {
+    bindCE(opt);
+    bindData(opt);
+    bindStyles(opt);
 
     /**
-     * Check
+     * Append To DOM
      */
-    // Check opt.el
-    if (!$marqueeContainer.length) return;
+    var $c = opt.$c;
+    opt.leftItem && $c.$marqueeContainer.append($c.$leftItem);
 
-    // Check Type
-    var
-      list = (Object.prototype.toString.call(opt.list) === '[object Array]') ? opt.list : [],
-      len = list.length,
+    $c.$marqueeContainer.append($c.$inner.append($c.$content));
 
-      delayBeforeStart = +opt.delayBeforeStart || defaultOpt.delayBeforeStart,
-      speedPeerSec = +opt.speedPeerSec || defaultOpt.speedPeerSec,
-      minShowCount = +opt.minShowCount || defaultOpt.minShowCount,
+    opt.rightItem && $c.$marqueeContainer.append($c.$rightItem);
 
-      isFadeInOut = !!opt.fadeInOut,
-      alwaysScroll = !!opt.alwaysScroll,
-      showTips = !!opt.tips,
-      showCloseBtn = !!opt.closeBtn;
+    // Bind Outer Container Click Event
+    typeof opt.onclick === 'function' && $c.$marqueeContainer.on('click', opt.onclick);
 
-    // Check List Length
-    if (!len || len < minShowCount) {
-      $marqueeContainer.hide();
-      return;
+    // Calc Width And Set CSS Animation
+    setTimeout(function () {
+      /**
+       * We have to append $scroll here.
+       *
+       * Fix the bug that marquee can not be rendering on some iOS devices.
+       *
+       * 需要放在这里面才能生效，以避免有些 iOS 设备下出现跑马灯无法渲染的问题
+       */
+      $c.$content.append($c.$scroll);
+
+      var contentWidth = $c.$content.width(),
+        width = $c.$scroll.width(),
+        time;
+
+      /**
+       * Always scrolling if contentWidth bigger than scroll container,
+       *
+       * or set alwaysScroll to true.
+       */
+      if (!opt.alwaysScroll && (contentWidth >= width)) {
+        $c.$scroll.css('padding-left', 0);
+        $c.$marqueeContainer.removeClass('m-marquee-fade'); // Remove Fade Effect
+      }
+      else {
+        time = (width + contentWidth) / opt.speedPeerSec;
+        $c.$scroll.css({
+          'padding-left': '100%',
+          '-webkit-animation-duration': time + 's',
+          'animation-duration': time + 's',
+          '-webkit-animation-delay': opt.delayBeforeStart + 's',
+          'animation-delay': opt.delayBeforeStart + 's'
+        });
+
+        // For notificationOnce
+        opt.once && setTimeout(function () {
+          $c.$marqueeContainer.hide();
+        }, time * 1000);
+      }
+    }, 0); // Necessary
+
+    return true;
+  }
+
+  /**
+   * CSS
+   *
+   * Bind style once.
+   */
+  function bindStyles(opt) {
+    var styleText, backgroundText = '';
+
+    if (!$('#m-marquee-style').length) {
+      styleText = '.m-marquee { position: relative; }'
+        + '.m-marquee .m-marquee-inner { position: relative; }'
+        + '.m-marquee.m-marquee-left .m-marquee-inner { padding-left: 40px; }'
+        + '.m-marquee.m-marquee-right .m-marquee-inner { padding-right: 40px; }'
+        + '.m-marquee.m-marquee-left .m-marquee-left-item, .m-marquee.m-marquee-right .m-marquee-right-item { position: absolute; top: 0; left: 0; width: 40px; height: 100%; }'
+        + '.m-marquee.m-marquee-right .m-marquee-right-item { right: 0; left: initial; }'
+        + '.m-marquee.m-marquee-left .m-marquee-left-item:before, .m-marquee.m-marquee-right .m-marquee-right-item:before { content: ""; position: absolute; top: 50%; left: 7px; width: 16px; height: 16px; background-size: 16px auto; background-repeat: no-repeat; -webkit-transform: translateY(-50%); transform: translateY(-50%); }'
+        + '.m-marquee.m-marquee-right .m-marquee-right-item:before { right: 7px; left: initial; }'
+
+        + '.m-marquee .m-marquee-content { position: relative; overflow: hidden; white-space: nowrap; }'
+        + '.m-marquee.m-marquee-fade .m-marquee-content:before, .m-marquee.m-marquee-fade .m-marquee-content:after { content: ""; position: absolute; top: 0; width: 15px; height: 100%; z-index: 99999; }'
+        + '.m-marquee.m-marquee-fade .m-marquee-content:before { left: 0; background-image: -webkit-linear-gradient(-90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%); background-image: linear-gradient(-90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%); }'
+        + '.m-marquee.m-marquee-fade .m-marquee-content:after { right: 0; background-image: -webkit-linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%); background-image: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%); }'
+
+        + '.m-marquee .m-marquee-content-scroll { display: inline-block; -webkit-animation: m-marquee 0s linear infinite; animation: m-marquee 0s linear infinite; }'
+        + '.m-marquee .m-marquee-content-scroll .m-marquee-item { padding-right: 40px; }'
+        + '.m-marquee .m-marquee-content-scroll .m-marquee-item:last-child { padding-right: 0; }'
+
+        + '@-webkit-keyframes m-marquee { from { -webkit-transform: translate3d(0,0,0); transform: translate3d(0,0,0); } to { -webkit-transform: translate3d(-100%,0,0); transform: translate3d(-100%,0,0); }'
+        + '@keyframes m-marquee { from { -webkit-transform: translate3d(0,0,0); transform: translate3d(0,0,0); } to { -webkit-transform: translate3d(-100%,0,0); transform: translate3d(-100%,0,0); } }';
+
+      $('head').append($('<style id="m-marquee-style"></style>').text(styleText));
     }
-    else {
-      $marqueeContainer.show();
-    }
 
+    // Set background-image
+    opt.leftItem && opt.leftItemImg && (backgroundText += '.m-marquee.' + opt.marqueeId + '.m-marquee-left .m-marquee-left-item:before { background-image: url("' + opt.leftItemImg + '"); }');
+    opt.rightItem && opt.rightItemImg && (backgroundText += '.m-marquee.' + opt.marqueeId + '.m-marquee-right .m-marquee-right-item:before { background-image: url("' + opt.rightItemImg + '"); }');
 
-    /**
-     * Bind And Fill Data
-     */
-    // Remove All className (IMPORTANT)
-    $marqueeContainer.html('').removeClass().addClass('m-marquee');
+    backgroundText && opt.$c.$marqueeContainer.addClass(opt.marqueeId).append('<style>' + backgroundText + '</style>');
+  }
 
-    // Add External className
-    opt.externalClass && $marqueeContainer.addClass(opt.externalClass);
+  /**
+   * Bind Data
+   */
+  function bindData(opt) {
+    var list = opt.list,
+      len = opt.listLen,
+      dataText = '', i;
 
-    // Fade In And Fade Out
-    isFadeInOut && $marqueeContainer.addClass('m-marquee-fade');
-
-    // Show Tips Icon
-    showTips && $marqueeContainer.addClass('m-marquee-tips');
-
-    // Show Close Button Icon
-    if (showCloseBtn) {
-      $marqueeContainer.addClass('m-marquee-close');
-
-      $closeBtn.on('click', function () {
-        var close = function () {
-          $marqueeContainer.hide(); // TODO Add animation
-
-          // Cancel Listener
-          $closeBtn.off('click');
-        };
-
-        // Bind Callback
-        if (typeof opt.closeBtnCB === 'function') {
-          opt.closeBtnCB() && close();
-        }
-        else {
-          close();
-        }
-      });
-    }
-
-    // Fill Data
     switch (typeof list[0]) {
       case 'object': // With Links
         var textField = opt.linkTextField,
@@ -123,115 +207,103 @@
           tmpUrl = list[i][urlField];
 
           dataText += tmpUrl ?
-            ('<a href="' + tmpUrl + '">' + tmpText + '</a>') :
-            ('<a>' + tmpText + '</a>');
+            ('<a class="m-marquee-item" href="' + tmpUrl + '">' + tmpText + '</a>') :
+            ('<a class="m-marquee-item">' + tmpText + '</a>');
         }
-        $scroll.append(dataText);
 
         break;
 
       case 'string': // Without Links
         for (i = 0; i < len; i++) {
-          dataText += '<span>' + list[i] + '</span>';
+          dataText += '<span class="m-marquee-item">' + list[i] + '</span>';
         }
-        $scroll.append(dataText);
 
         break;
 
       default:
-        $marqueeContainer.hide();
-        return;
+        opt.$c.$marqueeContainer.hide();
     }
 
-
-    /**
-     * CSS
-     */
-    // Set Common Style
-    setCommonStyle();
-
-    // Set background-image
-    showTips && (backgroundText += '.m-marquee.' + marqueeId + '.m-marquee-tips .m-marquee-inner:before { background-image: url("' + (opt.tipsImg ? opt.tipsImg : '') + '"); }');
-    showCloseBtn && (backgroundText += '.m-marquee.' + marqueeId + '.m-marquee-close .m-marquee-close-btn:before { background-image: url("' + (opt.closeBtnImg ? opt.closeBtnImg : '') + '"); }');
-
-    backgroundText && $marqueeContainer.addClass(marqueeId).append('<style>' + backgroundText + '</style>');
-
-
-    /**
-     * Append To DOM
-     */
-    $marqueeContainer.append($inner.append($content));
-
-    // Add Close Button
-    showCloseBtn && $marqueeContainer.append($closeBtn);
-
-    // Calc Width And Set CSS Animation
-    setTimeout(function () {
-      /**
-       * We should append $scroll here.
-       *
-       * Fix the bug that marquee can not be rendering on some iOS devices.
-       *
-       * 需要放在这里面才能生效，以避免有些 iOS 设备下出现跑马灯无法渲染的问题
-       */
-      $content.append($scroll);
-
-      var contentWidth = $content.width(),
-        width = $scroll.width(),
-        time;
-
-      /**
-       * Always scrolling if contentWidth bigger than scroll container,
-       *
-       * or set alwaysScroll to true.
-       */
-      if (!alwaysScroll && (contentWidth >= width)) {
-        $scroll.css('padding-left', 0);
-        $marqueeContainer.removeClass('m-marquee-fade'); // Remove Fade Effect
-      }
-      else {
-        time = (width + contentWidth) / speedPeerSec;
-        $scroll.css({
-          'padding-left': '100%',
-          '-webkit-animation-duration': time + 's',
-          'animation-duration': time + 's',
-          '-webkit-animation-delay': delayBeforeStart + 's',
-          'animation-delay': delayBeforeStart + 's'
-        });
-      }
-    }, 0); // Necessary
-  };
-
+    opt.$c.$scroll.append(dataText);
+  }
 
   /**
-   * CSS
+   * Bind class names.
    *
-   * Add style once.
+   * Class & Event
    */
-  function setCommonStyle() {
-    var styleText;
+  function bindCE(opt) {
+    var $c = opt.$c;
 
-    if (!$('#m-marquee-style').length) {
-      styleText = '.m-marquee { position: relative; }'
-        + '.m-marquee .m-marquee-inner { position: relative; }'
-        + '.m-marquee.m-marquee-tips .m-marquee-inner { padding-left: 40px; }'
-        + '.m-marquee.m-marquee-tips .m-marquee-inner:before { content: ""; position: absolute; top: 50%; left: 15px; width: 16px; height: 16px; background-size: 16px auto; background-repeat: no-repeat; -webkit-transform: translateY(-50%); transform: translateY(-50%); }'
-        + '.m-marquee .m-marquee-content { position: relative; overflow: hidden; white-space: nowrap; }'
-        + '.m-marquee.m-marquee-fade .m-marquee-content:before, .m-marquee.m-marquee-fade .m-marquee-content:after { content: ""; position: absolute; top: 0; width: 15px; height: 100%; z-index: 99999; }'
-        + '.m-marquee.m-marquee-fade .m-marquee-content:before { left: 0; background-image: -webkit-linear-gradient(-90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%); background-image: linear-gradient(-90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%); }'
-        + '.m-marquee.m-marquee-fade .m-marquee-content:after { right: 0; background-image: -webkit-linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%); background-image: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%); }'
-        + '.m-marquee .m-marquee-content-scroll { display: inline-block; -webkit-animation: m-marquee 0s linear infinite; animation: m-marquee 0s linear infinite; }'
-        + '.m-marquee .m-marquee-content-scroll span, .m-marquee .m-marquee-content-scroll a { padding-right: 40px; }'
-        + '.m-marquee.m-marquee-close .m-marquee-inner { padding-right: 30px; }'
-        + '.m-marquee.m-marquee-close .m-marquee-close-btn { position: absolute; top: 0; right: 0; width: 30px; height: 100%; }'
-        + '.m-marquee.m-marquee-close .m-marquee-close-btn:before { content: ""; position: absolute; top: 50%; right: 7px; width: 16px; height: 16px; background-size: 16px auto; background-repeat: no-repeat; -webkit-transform: translateY(-50%); transform: translateY(-50%); }'
-        + '@-webkit-keyframes m-marquee { from { -webkit-transform: translate3d(0,0,0); transform: translate3d(0,0,0); } to { -webkit-transform: translate3d(-100%,0,0); transform: translate3d(-100%,0,0); }'
-        + '@keyframes m-marquee { from { -webkit-transform: translate3d(0,0,0); transform: translate3d(0,0,0); } to { -webkit-transform: translate3d(-100%,0,0); transform: translate3d(-100%,0,0); } }';
+    // Remove All className (IMPORTANT)
+    $c.$marqueeContainer.html('').removeClass().off('click').addClass('m-marquee');
 
-      $('head').append($('<style id="m-marquee-style"></style>').text(styleText));
+    // Add External className
+    opt.externalClass && $c.$marqueeContainer.addClass(opt.externalClass);
+
+    // Fade In And Fade Out
+    opt.fadeInOut && $c.$marqueeContainer.addClass('m-marquee-fade');
+
+    // Bind Left And Right Item
+    function bindItem($item, itemCB, name) {
+      $c.$marqueeContainer.addClass('m-marquee-' + name);
+
+      typeof itemCB === 'function' && $item.on('click', itemCB);
+    }
+
+    // Bind Item
+    opt.leftItem && bindItem($c.$leftItem, opt.leftItemCB, 'left');
+    opt.rightItem && bindItem($c.$rightItem, opt.rightItemCB, 'right');
+  }
+
+  /**
+   * Check marquee visibility.
+   */
+  function checkVisibility(opt) {
+    if (
+      !opt.$c.$marqueeContainer.length // Check opt.el.length
+      || !opt.listLen
+      || opt.listLen < opt.minShowCount
+    ) {
+      opt.$c.$marqueeContainer.hide();
+      return false;
+    }
+    else {
+      opt.$c.$marqueeContainer.show();
+      return true;
     }
   }
 
+  /**
+   * Extend options from opt and default options.
+   */
+  function extendOptions(opt, innerOpt) {
+    opt = $.extend({}, defaultOpt, opt || {}, innerOpt || {});
+    opt.marqueeId = 'm-marquee-' + getMarqueeId();
+
+    opt.list = (Object.prototype.toString.call(opt.list) === '[object Array]') ? opt.list : [];
+    opt.listLen = opt.list.length;
+
+    opt.delayBeforeStart = +opt.delayBeforeStart || defaultOpt.delayBeforeStart;
+    opt.speedPeerSec = +opt.speedPeerSec || defaultOpt.speedPeerSec;
+    opt.minShowCount = +opt.minShowCount || defaultOpt.minShowCount;
+
+    opt.fadeInOut = !!opt.fadeInOut;
+    opt.alwaysScroll = !!opt.alwaysScroll;
+    opt.leftItem = !!opt.leftItem;
+    opt.rightItem = !!opt.rightItem;
+
+    opt.$c = {
+      $marqueeContainer: opt.el,
+      $inner: $('<div class="m-marquee-inner"></div>'),
+      $content: $('<div class="m-marquee-content"></div>'),
+      $scroll: $('<div class="m-marquee-content-scroll"></div>'),
+      $leftItem: $('<div class="m-marquee-left-item"></div>'),
+      $rightItem: $('<div class="m-marquee-right-item"></div>')
+    };
+
+    return opt;
+  }
 
   /**
    * Closure

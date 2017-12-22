@@ -12,7 +12,31 @@ In a browser:
 <script src="dist/hMarquee.min.js"></script>
 ```
 
+## Method
+
+### `$.hMarquee.marquee(options)`
+
+A normal horizontal scroll marquee.
+
+### `$.hMarquee.notification(options)`
+
+A scroll notification bar, for only one notification.
+
+### `$.hMarquee.notificationOnce(options)`
+
+An *always scroll* notification bar for only once scrolling. Also for only one notification.
+
+**Note:** The above three methods will return `undefined` for wrong options or `options.el`.
+
+### `$.hMarquee.hide($el)` and `$.hMarquee.show($el)`
+
+Hide and show the marquee. You have to passing `jQuery object` or `Zepto object` as a parameter.
+
+More information about options. Please read [Options](#options).
+
 ## Options
+
+Options is an `Object` type.
 
 ### `el`
 
@@ -58,8 +82,9 @@ Or for `Array<object>`:
 
 **Note:**
  
-1. `linkTextField` and `linkUrlField` is only available this time.
-2. `object['linkUrlField']` is falsity and would be downgrading to `<span>object['linkTextField']</span>`.
+1. Only available for `$.hMarquee.marquee`.
+2. `linkTextField` and `linkUrlField` options is only working for `lists`.
+3. `object['linkUrlField']` is falsity and would be downgrading to `<span>object['linkTextField']</span>`.
 
 ### `linkTextField`
 
@@ -72,6 +97,22 @@ Look `list` for more information.
 `string`, default to `url`
 
 Look `list` for more information.
+
+### `noticeText` *
+
+`string`
+
+Notification data source.
+
+**Note:** Only available for `$.hMarquee.notification` and `$.hMarquee.notificationOnce`.
+
+### `onclick`
+
+`function`
+
+Do something when click the notification bar.
+
+**Note:** Only available for `$.hMarquee.notification` and `$.hMarquee.notificationOnce`.
 
 ### `delayBeforeStart`
 
@@ -111,55 +152,43 @@ Always scroll the content.
 
 By default, no scroll, no fade effect when content width less than `m-marquee-content` container width.
 
-### `tips`
+**Note:** `$.hMarquee.notificationOnce` must to scroll, but only once.
+
+### `leftItem` / `rightItem`
 
 `boolean`, default to `false`
 
-Show left tips icon.
+Show left / right item icon.
 
-If true, you should use `tipsImg` for icon. 
+If true, you should use `leftItemImg` / `rightItemImg` for icon. 
 
-### `tipsImg`
+### `leftItemImg` / `rightItemImg`
 
 `string`
 
 Support image base64 data and image url.
 
-### `closeBtn`
-
-`boolean`, default to `false`
-
-Show marquee close button on right. 
-
-If true, you should use `closeBtnImg` for icon.
-
-### `closeBtnImg`
-
-`string`
-
-Support image base64 data and image url.
-
-### `closeBtnCB`
+### `leftItemCB` / `rightItemCB`
 
 `function`
 
 Do something before close the marquee.
 
-The function return true to close marquee, or return false to keep.
-
 ## Code Tree
 
 ```html
-<div class="m-marquee m-marquee-${marqueeId} ${externalClass} ${tips && 'm-marquee-tips'} ${closeBtn && 'm-marquee-close'} ${fadeInOut && 'm-marquee-fade'}">
+<div class="m-marquee m-marquee-${marqueeId} ${externalClass} ${leftItem && 'm-marquee-left'} ${rightItem && 'm-marquee-right'} ${fadeInOut && 'm-marquee-fade'}">
+    <div class="m-marquee-left-item"></div>
     <div class="m-marquee-inner">
         <div class="m-marquee-content">
             <div class="m-marquee-content-scroll">
-                <a href="${list[linkUrlField]}">${list[linkTextField]}</a>
-                <span>list[i]</span>
+                <a class="m-marquee-item" href="${list[linkUrlField]}">${list[linkTextField]}</a>
+                <span class="m-marquee-item">list[i]</span>
+                <span class="m-marquee-item">noticeText</span>
             </div>
         </div>
     </div>
-    <div class="m-marquee-close-btn"></div>
+    <div class="m-marquee-right-item"></div>
 </div>
 ```
 
