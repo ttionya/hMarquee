@@ -1,7 +1,7 @@
 /**
  * Author: ttionya
  *
- * Version: 1.1.4
+ * Version: 1.2.0
  *
  * GitHub: https://github.com/ttionya/hMarquee
  *
