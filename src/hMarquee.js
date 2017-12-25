@@ -1,7 +1,7 @@
 /**
  * Author: ttionya
  *
- * Version: 1.1.0
+ * Version: 1.1.1
  *
  * GitHub: https://github.com/ttionya/hMarquee
  *
@@ -140,7 +140,7 @@
 
         // For notificationOnce
         opt.once && setTimeout(function () {
-          this.hide($c.$marqueeContainer);
+          $.hMarquee.hide($c.$marqueeContainer);
         }, time * 1000);
       }
     }, 0); // Necessary
