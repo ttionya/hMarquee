@@ -38,7 +38,7 @@
       once: false
     });
 
-    return checkVisibility(opt) && bindAll(opt) ? opt.$c.$marqueeContainer : undefined;
+    return checkVisibility(opt) && bindAll(opt) ? opt.$c.$marqueeC : undefined;
   };
 
   /**
@@ -53,7 +53,7 @@
       once: false
     });
 
-    return checkVisibility(opt) && bindAll(opt) ? opt.$c.$marqueeContainer : undefined;
+    return checkVisibility(opt) && bindAll(opt) ? opt.$c.$marqueeC : undefined;
   };
 
   /**
@@ -69,7 +69,7 @@
       once: true
     });
 
-    return checkVisibility(opt) && bindAll(opt) ? opt.$c.$marqueeContainer : undefined;
+    return checkVisibility(opt) && bindAll(opt) ? opt.$c.$marqueeC : undefined;
   };
 
   /**
@@ -95,14 +95,14 @@
      * Append To DOM
      */
     var $c = opt.$c;
-    opt.leftItem && $c.$marqueeContainer.append($c.$leftItem);
+    opt.leftItem && $c.$marqueeC.append($c.$leftItem);
 
-    $c.$marqueeContainer.append($c.$inner.append($c.$content));
+    $c.$marqueeC.append($c.$inner.append($c.$content));
 
-    opt.rightItem && $c.$marqueeContainer.append($c.$rightItem);
+    opt.rightItem && $c.$marqueeC.append($c.$rightItem);
 
     // Bind Outer Container Click Event
-    typeof opt.onclick === 'function' && $c.$marqueeContainer.on('click', opt.onclick);
+    typeof opt.onclick === 'function' && $c.$marqueeC.on('click', opt.onclick);
 
     // Calc Width And Set CSS Animation
     setTimeout(function () {
@@ -115,7 +115,7 @@
        */
       $c.$content.append($c.$scroll);
 
-      $c.$marqueeContainer.height($c.$marqueeContainer.height());
+      $c.$marqueeC.height($c.$marqueeC.height());
 
       var contentWidth = $c.$content.width(),
         width = $c.$scroll.width(),
@@ -128,7 +128,7 @@
        */
       if (!opt.alwaysScroll && (contentWidth >= width)) {
         $c.$scroll.css('padding-left', 0);
-        $c.$marqueeContainer.removeClass('m-marquee-fade'); // Remove Fade Effect
+        $c.$marqueeC.removeClass('m-marquee-fade'); // Remove Fade Effect
       }
       else {
         time = (width + contentWidth) / opt.speedPeerSec;
@@ -146,7 +146,7 @@
 
         // For notificationOnce
         opt.once && setTimeout(function () {
-          $.hMarquee.hide($c.$marqueeContainer);
+          $.hMarquee.hide($c.$marqueeC);
         }, time * 1000);
       }
     }, 0); // Necessary
@@ -195,7 +195,7 @@
     opt.leftItem && opt.leftItemImg && (backgroundText += '.m-marquee.' + opt.marqueeId + '.m-marquee-left .m-marquee-left-item:before { background-image: url("' + opt.leftItemImg + '"); }');
     opt.rightItem && opt.rightItemImg && (backgroundText += '.m-marquee.' + opt.marqueeId + '.m-marquee-right .m-marquee-right-item:before { background-image: url("' + opt.rightItemImg + '"); }');
 
-    backgroundText && opt.$c.$marqueeContainer.addClass(opt.marqueeId).append('<style>' + backgroundText + '</style>');
+    backgroundText && opt.$c.$marqueeC.addClass(opt.marqueeId).append('<style>' + backgroundText + '</style>');
   }
 
   /**
@@ -231,7 +231,7 @@
         break;
 
       default:
-        opt.$c.$marqueeContainer.hide();
+        opt.$c.$marqueeC.hide();
     }
 
     opt.$c.$scroll.append(dataText);
@@ -246,17 +246,17 @@
     var $c = opt.$c;
 
     // Remove All className (IMPORTANT)
-    $c.$marqueeContainer.html('').removeClass().off('click').addClass('m-marquee');
+    $c.$marqueeC.html('').removeClass().off('click').addClass('m-marquee');
 
     // Add External className
-    opt.externalClass && $c.$marqueeContainer.addClass(opt.externalClass);
+    opt.externalClass && $c.$marqueeC.addClass(opt.externalClass);
 
     // Fade In And Fade Out
-    opt.fadeInOut && $c.$marqueeContainer.addClass('m-marquee-fade');
+    opt.fadeInOut && $c.$marqueeC.addClass('m-marquee-fade');
 
     // Bind Left And Right Item
     function bindItem($item, itemCB, name) {
-      $c.$marqueeContainer.addClass('m-marquee-' + name);
+      $c.$marqueeC.addClass('m-marquee-' + name);
 
       typeof itemCB === 'function' && $item.on('click', itemCB);
     }
@@ -271,15 +271,15 @@
    */
   function checkVisibility(opt) {
     if (
-      !opt.$c.$marqueeContainer.length // Check opt.el.length
+      !opt.$c.$marqueeC.length // Check opt.el.length
       || !opt.listLen
       || opt.listLen < opt.minShowCount
     ) {
-      opt.$c.$marqueeContainer.hide();
+      opt.$c.$marqueeC.hide();
       return false;
     }
     else {
-      opt.$c.$marqueeContainer.show();
+      opt.$c.$marqueeC.show();
       return true;
     }
   }
@@ -304,7 +304,7 @@
     opt.rightItem = !!opt.rightItem;
 
     opt.$c = {
-      $marqueeContainer: opt.el,
+      $marqueeC: opt.el,
       $inner: $('<div class="m-marquee-inner"></div>'),
       $content: $('<div class="m-marquee-content"></div>'),
       $scroll: $('<div class="m-marquee-content-scroll"></div>'),
