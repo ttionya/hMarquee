@@ -19,6 +19,7 @@
 
       fadeInOut: false,
       alwaysScroll: false,
+      startVisibility: true,
       leftItem: false,
       rightItem: false,
 
@@ -115,7 +116,7 @@
        */
       $c.$content.append($c.$scroll);
 
-      $c.$marqueeC.height($c.$marqueeC.height());
+      $c.$marqueeC.height($c.$inner.height());
 
       var contentWidth = $c.$content.width(),
         width = $c.$scroll.width(),
@@ -163,7 +164,8 @@
     var styleText, backgroundText = '';
 
     if (!$('#m-marquee-style').length) {
-      styleText = '.m-marquee { position: relative; overflow: hidden; transition: height .2s ease-in; }'
+      styleText = '.m-marquee { position: relative; overflow: hidden; -webkit-transition: height .2s ease-in; transition: height .2s ease-in; }'
+        + '.m-marquee.m-no-ani { -webkit-transition: none; transition: none; }'
 
         + '.m-marquee.m-hidden { height: 0 !important; }'
         + '.m-marquee.m-hidden .m-marquee-content-scroll { -webkit-animation: none; animation: none; }'
@@ -254,6 +256,9 @@
     // Fade In And Fade Out
     opt.fadeInOut && $c.$marqueeC.addClass('m-marquee-fade');
 
+    // Start Visibility
+    $c.$marqueeC.addClass(opt.startVisibility ? 'm-no-ani' : 'm-hidden');
+
     // Bind Left And Right Item
     function bindItem($item, itemCB, name) {
       $c.$marqueeC.addClass('m-marquee-' + name);
@@ -300,6 +305,7 @@
 
     opt.fadeInOut = !!opt.fadeInOut;
     opt.alwaysScroll = !!opt.alwaysScroll;
+    opt.startVisibility = !!opt.startVisibility;
     opt.leftItem = !!opt.leftItem;
     opt.rightItem = !!opt.rightItem;
 
