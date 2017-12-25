@@ -1,7 +1,7 @@
 /**
  * Author: ttionya
  *
- * Version: 1.2.0
+ * Version: 1.2.1
  *
  * GitHub: https://github.com/ttionya/hMarquee
  *
@@ -97,10 +97,9 @@
      * Append To DOM
      */
     var $c = opt.$c;
-    opt.leftItem && $c.$marqueeC.append($c.$leftItem);
-
     $c.$marqueeC.append($c.$inner.append($c.$content));
 
+    opt.leftItem && $c.$marqueeC.append($c.$leftItem);
     opt.rightItem && $c.$marqueeC.append($c.$rightItem);
 
     // Bind Outer Container Click Event
@@ -121,7 +120,12 @@
 
       var contentWidth = $c.$content.width(),
         width = $c.$scroll.width(),
-        time;
+        time,
+        setT = function () {
+          setTimeout(function () {
+            $.hMarquee.hide($c.$marqueeC);
+          }, time * 1000);
+        };
 
       /**
        * Always scrolling if contentWidth bigger than scroll container,
@@ -147,11 +151,8 @@
           .offset();
 
         // For notificationOnce
-        opt.once && $c.$marqueeC.on('show', function () {
-          setTimeout(function () {
-            $.hMarquee.hide($c.$marqueeC);
-          }, time * 1000);
-        })
+        opt.once && $c.$marqueeC.on('show', setT);
+        opt.once && opt.startVisibility && setT();
       }
 
       $c.$marqueeC.removeClass('m-no-ani');
