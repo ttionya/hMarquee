@@ -82,6 +82,7 @@
 
   $.hMarquee.show = function ($el) {
     $el.removeClass('m-hidden');
+    $el.trigger('show');
   };
 
   /**
@@ -146,9 +147,11 @@
           .offset();
 
         // For notificationOnce
-        opt.once && setTimeout(function () {
-          $.hMarquee.hide($c.$marqueeC);
-        }, time * 1000);
+        opt.once && $c.$marqueeC.on('show', function () {
+          setTimeout(function () {
+            $.hMarquee.hide($c.$marqueeC);
+          }, time * 1000);
+        })
       }
 
       $c.$marqueeC.removeClass('m-no-ani');
