@@ -97,10 +97,9 @@
      * Append To DOM
      */
     var $c = opt.$c;
-    opt.leftItem && $c.$marqueeC.append($c.$leftItem);
-
     $c.$marqueeC.append($c.$inner.append($c.$content));
 
+    opt.leftItem && $c.$marqueeC.append($c.$leftItem);
     opt.rightItem && $c.$marqueeC.append($c.$rightItem);
 
     // Bind Outer Container Click Event
