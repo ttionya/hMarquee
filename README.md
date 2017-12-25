@@ -146,6 +146,14 @@ You can custom `m-marquee-content:before` and `m-marquee-content:after` for your
 
 Note the CSS selector priority `.m-marquee.m-marquee-fade .m-marquee-content:before|after`.
 
+### `startVisibility`
+
+`boolean`, default to `true`
+
+Show marquee at once after initialize hMarquee.
+
+If set to `false`, you can use `$.hMarquee.show` to achieve animation.
+
 ### `alwaysScroll`
 
 `boolean`, default to `false`
@@ -179,7 +187,7 @@ Do something before close the marquee.
 ## Code Tree
 
 ```html
-<div class="m-marquee m-marquee-${marqueeId} ${externalClass} ${leftItem && 'm-marquee-left'} ${rightItem && 'm-marquee-right'} ${fadeInOut && 'm-marquee-fade'}">
+<div class="m-marquee m-marquee-${marqueeId} ${externalClass} ${'m-marquee-left'} ${'m-marquee-right'} ${'m-marquee-fade'} ${'m-no-ani'} ${'m-hidden'}">
     <div class="m-marquee-left-item"></div>
     <div class="m-marquee-inner">
         <div class="m-marquee-content">

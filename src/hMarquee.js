@@ -1,7 +1,7 @@
 /**
  * Author: ttionya
  *
- * Version: 1.1.4
+ * Version: 1.2.0
  *
  * GitHub: https://github.com/ttionya/hMarquee
  *
@@ -19,6 +19,7 @@
 
       fadeInOut: false,
       alwaysScroll: false,
+      startVisibility: true,
       leftItem: false,
       rightItem: false,
 
@@ -38,7 +39,7 @@
       once: false
     });
 
-    return checkVisibility(opt) && bindAll(opt) ? opt.$c.$marqueeContainer : undefined;
+    return checkVisibility(opt) && bindAll(opt) ? opt.$c.$marqueeC : undefined;
   };
 
   /**
@@ -53,7 +54,7 @@
       once: false
     });
 
-    return checkVisibility(opt) && bindAll(opt) ? opt.$c.$marqueeContainer : undefined;
+    return checkVisibility(opt) && bindAll(opt) ? opt.$c.$marqueeC : undefined;
   };
 
   /**
@@ -69,7 +70,7 @@
       once: true
     });
 
-    return checkVisibility(opt) && bindAll(opt) ? opt.$c.$marqueeContainer : undefined;
+    return checkVisibility(opt) && bindAll(opt) ? opt.$c.$marqueeC : undefined;
   };
 
   /**
@@ -81,6 +82,7 @@
 
   $.hMarquee.show = function ($el) {
     $el.removeClass('m-hidden');
+    $el.trigger('show');
   };
 
   /**
@@ -95,14 +97,14 @@
      * Append To DOM
      */
     var $c = opt.$c;
-    opt.leftItem && $c.$marqueeContainer.append($c.$leftItem);
+    opt.leftItem && $c.$marqueeC.append($c.$leftItem);
 
-    $c.$marqueeContainer.append($c.$inner.append($c.$content));
+    $c.$marqueeC.append($c.$inner.append($c.$content));
 
-    opt.rightItem && $c.$marqueeContainer.append($c.$rightItem);
+    opt.rightItem && $c.$marqueeC.append($c.$rightItem);
 
     // Bind Outer Container Click Event
-    typeof opt.onclick === 'function' && $c.$marqueeContainer.on('click', opt.onclick);
+    typeof opt.onclick === 'function' && $c.$marqueeC.on('click', opt.onclick);
 
     // Calc Width And Set CSS Animation
     setTimeout(function () {
@@ -115,7 +117,7 @@
        */
       $c.$content.append($c.$scroll);
 
-      $c.$marqueeContainer.height($c.$marqueeContainer.height());
+      $c.$marqueeC.height($c.$inner.height());
 
       var contentWidth = $c.$content.width(),
         width = $c.$scroll.width(),
@@ -128,7 +130,7 @@
        */
       if (!opt.alwaysScroll && (contentWidth >= width)) {
         $c.$scroll.css('padding-left', 0);
-        $c.$marqueeContainer.removeClass('m-marquee-fade'); // Remove Fade Effect
+        $c.$marqueeC.removeClass('m-marquee-fade'); // Remove Fade Effect
       }
       else {
         time = (width + contentWidth) / opt.speedPeerSec;
@@ -145,10 +147,14 @@
           .offset();
 
         // For notificationOnce
-        opt.once && setTimeout(function () {
-          $.hMarquee.hide($c.$marqueeContainer);
-        }, time * 1000);
+        opt.once && $c.$marqueeC.on('show', function () {
+          setTimeout(function () {
+            $.hMarquee.hide($c.$marqueeC);
+          }, time * 1000);
+        })
       }
+
+      $c.$marqueeC.removeClass('m-no-ani');
     }, 0); // Necessary
 
     return true;
@@ -163,7 +169,8 @@
     var styleText, backgroundText = '';
 
     if (!$('#m-marquee-style').length) {
-      styleText = '.m-marquee { position: relative; overflow: hidden; transition: height .2s ease-in; }'
+      styleText = '.m-marquee { position: relative; overflow: hidden; -webkit-transition: height .2s ease-in; transition: height .2s ease-in; }'
+        + '.m-marquee.m-no-ani { -webkit-transition: none; transition: none; }'
 
         + '.m-marquee.m-hidden { height: 0 !important; }'
         + '.m-marquee.m-hidden .m-marquee-content-scroll { -webkit-animation: none; animation: none; }'
@@ -195,7 +202,7 @@
     opt.leftItem && opt.leftItemImg && (backgroundText += '.m-marquee.' + opt.marqueeId + '.m-marquee-left .m-marquee-left-item:before { background-image: url("' + opt.leftItemImg + '"); }');
     opt.rightItem && opt.rightItemImg && (backgroundText += '.m-marquee.' + opt.marqueeId + '.m-marquee-right .m-marquee-right-item:before { background-image: url("' + opt.rightItemImg + '"); }');
 
-    backgroundText && opt.$c.$marqueeContainer.addClass(opt.marqueeId).append('<style>' + backgroundText + '</style>');
+    backgroundText && opt.$c.$marqueeC.addClass(opt.marqueeId).append('<style>' + backgroundText + '</style>');
   }
 
   /**
@@ -231,7 +238,7 @@
         break;
 
       default:
-        opt.$c.$marqueeContainer.hide();
+        opt.$c.$marqueeC.hide();
     }
 
     opt.$c.$scroll.append(dataText);
@@ -246,17 +253,20 @@
     var $c = opt.$c;
 
     // Remove All className (IMPORTANT)
-    $c.$marqueeContainer.html('').removeClass().off('click').addClass('m-marquee');
+    $c.$marqueeC.html('').removeClass().off('click').addClass('m-marquee');
 
     // Add External className
-    opt.externalClass && $c.$marqueeContainer.addClass(opt.externalClass);
+    opt.externalClass && $c.$marqueeC.addClass(opt.externalClass);
 
     // Fade In And Fade Out
-    opt.fadeInOut && $c.$marqueeContainer.addClass('m-marquee-fade');
+    opt.fadeInOut && $c.$marqueeC.addClass('m-marquee-fade');
+
+    // Start Visibility
+    $c.$marqueeC.addClass(opt.startVisibility ? 'm-no-ani' : 'm-hidden');
 
     // Bind Left And Right Item
     function bindItem($item, itemCB, name) {
-      $c.$marqueeContainer.addClass('m-marquee-' + name);
+      $c.$marqueeC.addClass('m-marquee-' + name);
 
       typeof itemCB === 'function' && $item.on('click', itemCB);
     }
@@ -271,15 +281,15 @@
    */
   function checkVisibility(opt) {
     if (
-      !opt.$c.$marqueeContainer.length // Check opt.el.length
+      !opt.$c.$marqueeC.length // Check opt.el.length
       || !opt.listLen
       || opt.listLen < opt.minShowCount
     ) {
-      opt.$c.$marqueeContainer.hide();
+      opt.$c.$marqueeC.hide();
       return false;
     }
     else {
-      opt.$c.$marqueeContainer.show();
+      opt.$c.$marqueeC.show();
       return true;
     }
   }
@@ -300,11 +310,12 @@
 
     opt.fadeInOut = !!opt.fadeInOut;
     opt.alwaysScroll = !!opt.alwaysScroll;
+    opt.startVisibility = !!opt.startVisibility;
     opt.leftItem = !!opt.leftItem;
     opt.rightItem = !!opt.rightItem;
 
     opt.$c = {
-      $marqueeContainer: opt.el,
+      $marqueeC: opt.el,
       $inner: $('<div class="m-marquee-inner"></div>'),
       $content: $('<div class="m-marquee-content"></div>'),
       $scroll: $('<div class="m-marquee-content-scroll"></div>'),
