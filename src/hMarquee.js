@@ -1,7 +1,7 @@
 /**
  * Author: ttionya
  *
- * Version: 1.1.3
+ * Version: 1.1.4
  *
  * GitHub: https://github.com/ttionya/hMarquee
  *
@@ -138,7 +138,11 @@
           'animation-duration': time + 's',
           '-webkit-animation-delay': opt.delayBeforeStart + 's',
           'animation-delay': opt.delayBeforeStart + 's'
-        });
+        })
+
+        // Fix the bug that at iPhone 6 Plus, sometimes scroll slow. Because of render error.
+        // Force reflow and repaint.
+          .offset();
 
         // For notificationOnce
         opt.once && setTimeout(function () {
