@@ -188,7 +188,6 @@ Do something before close the marquee.
 
 ```html
 <div class="m-marquee m-marquee-${marqueeId} ${externalClass} ${'m-marquee-left'} ${'m-marquee-right'} ${'m-marquee-fade'} ${'m-no-ani'} ${'m-hidden'}">
-    <div class="m-marquee-left-item"></div>
     <div class="m-marquee-inner">
         <div class="m-marquee-content">
             <div class="m-marquee-content-scroll">
@@ -198,6 +197,7 @@ Do something before close the marquee.
             </div>
         </div>
     </div>
+    <div class="m-marquee-left-item"></div>
     <div class="m-marquee-right-item"></div>
 </div>
 ```
