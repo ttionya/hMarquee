@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>jQuery 1.x</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <script src="http://zeptojs.com/zepto.min.js"></script>
+  <script src="../dist/hMarquee.min.js"></script>
+  <script>
+    var listStrShort = ['This is one.', 'This is two.'];
+    var listStr = ['This is one.', 'This is two.', 'This is three', 'This is four.', 'This is five', 'This is six.', 'This is seven.', 'This is eight.', 'This is nine.', 'This is ten.'];
+    var listObj = [
+      { content: 'This is one.', link: 'https://en.wikipedia.org/wiki/1' },
+      { content: 'This is two.', link: 'https://en.wikipedia.org/wiki/2' },
+      { content: 'This is three.', link: 'https://en.wikipedia.org/wiki/3' },
+      { content: 'This is four.', link: 'https://en.wikipedia.org/wiki/4' },
+      { content: 'This is five.', link: 'https://en.wikipedia.org/wiki/5' },
+      { content: 'This is six.', link: 'https://en.wikipedia.org/wiki/6' },
+      { content: 'This is seven.', link: 'https://en.wikipedia.org/wiki/7' },
+      { content: 'This is eight.', link: 'https://en.wikipedia.org/wiki/8' },
+      { content: 'This is nine.', link: 'https://en.wikipedia.org/wiki/9' },
+      { content: 'This is ten.', link: 'https://en.wikipedia.org/wiki/10' }
+    ];
+    var noticeTextLong = 'This is a loooooooooooooooooooooooooooooooooooooooooooooooooong string.';
+    var noticeTextShort = 'This is a short string.';
+  </script>
+  <style>
+    a,
+    a:active,
+    a:hover,
+    a:visited {
+      text-decoration: none;
+      color: #f50;
+    }
+
+    .marquee {
+      width: 600px;
+      margin: 20px 50px 50px 50px;
+      color: #333;
+      background-color: antiquewhite;
+    }
+
+    @media screen and (max-width: 599px) {
+      .marquee {
+        width: 100%;
+        margin: 0;
+      }
+    }
+
+    .m-marquee .m-marquee-content {
+      font-size: 16px;
+      line-height: 30px;
+    }
+
+    .m-marquee.m-marquee-left .m-marquee-left-item:before,
+    .m-marquee.m-marquee-right .m-marquee-right-item:before {
+      width: 14px !important;
+      height: 13px !important;
+      background-size: 14px 13px !important;
+    }
+
+
+  </style>
+</head>
+<body>
+<h3>1. Marquee (list type string):</h3>
+<div class="J-marquee-1"></div>
+<script>
+  $.hMarquee.marquee({
+    el: $('.J-marquee-1'),
+    externalClass: 'marquee',
+    list: listStr
+  });
+</script>
+
+<h3>2. Marquee (list type object):</h3>
+<div class="J-marquee-2"></div>
+<script>
+  $.hMarquee.marquee({
+    el: $('.J-marquee-2'),
+    externalClass: 'marquee',
+    list: listObj,
+    linkTextField: 'content',
+    linkUrlField: 'link'
+  });
+</script>
+
+<h3>3. Marquee (2s delay):</h3>
+<div class="J-marquee-3"></div>
+<script>
+  $.hMarquee.marquee({
+    el: $('.J-marquee-3'),
+    externalClass: 'marquee',
+    list: listObj,
+    linkTextField: 'content',
+    linkUrlField: 'link',
+    delayBeforeStart: 2
+  });
+</script>
+
+<h3>4. Marquee (100px peer second):</h3>
+<div class="J-marquee-4"></div>
+<script>
+  $.hMarquee.marquee({
+    el: $('.J-marquee-4'),
+    externalClass: 'marquee',
+    list: listObj,
+    linkTextField: 'content',
+    linkUrlField: 'link',
+    speedPeerSec: 100
+  });
+</script>
+
+<h3>5. Marquee (list length more than 15 is displayed, now 10):</h3>
+<div class="J-marquee-5"></div>
+<script>
+  $.hMarquee.marquee({
+    el: $('.J-marquee-5'),
+    externalClass: 'marquee',
+    list: listObj,
+    linkTextField: 'content',
+    linkUrlField: 'link',
+    minShowCount: 15
+  });
+</script>
+
+<h3>6. Marquee (fade in and fade out):</h3>
+<div class="J-marquee-6"></div>
+<script>
+  $.hMarquee.marquee({
+    el: $('.J-marquee-6'),
+    externalClass: 'marquee',
+    list: listObj,
+    linkTextField: 'content',
+    linkUrlField: 'link',
+    fadeInOut: true
+  });
+</script>
+
+<h3>7. Marquee (too short to scroll):</h3>
+<div class="J-marquee-7"></div>
+<script>
+  $.hMarquee.marquee({
+    el: $('.J-marquee-7'),
+    externalClass: 'marquee',
+    list: listStrShort,
+    minShowCount: 1
+  });
+</script>
+
+<h3>8. Marquee (too short to scroll, but set always scroll):</h3>
+<div class="J-marquee-8"></div>
+<script>
+  $.hMarquee.marquee({
+    el: $('.J-marquee-8'),
+    externalClass: 'marquee',
+    list: listStrShort,
+    minShowCount: 1,
+    alwaysScroll: true
+  });
+</script>
+
+<h3>9. Marquee (show left item):</h3>
+<div class="J-marquee-9"></div>
+<script>
+  $.hMarquee.marquee({
+    el: $('.J-marquee-9'),
+    externalClass: 'marquee',
+    list: listObj,
+    linkTextField: 'content',
+    linkUrlField: 'link',
+    leftItem: true,
+    leftItemImg: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAaCAMAAACTisy7AAAAeFBMVEUAAAD/gFX2eVL/k2T1eFH1eVL2eVH1eVL6fVT/jnL2eFH1eVH2eVH/gVf2eVH2eFH2eFL2eFH2eVH2eVT2eVH2eVH2eVH1elL3elT4eVP3elP4e1X2eFL2eVH2eVL2eVL2elL2eVL3eVL3elT2eVH3eFP3eVL2eFE7fwK6AAAAJ3RSTlMADJEFnbX6txkD8c+lD9mxr/fkOcOZiYRORDMkyLuUdnFlYD+te3o7tCQhAAAA6ElEQVQoz5WS2XKDMAxFBQ7GNmDWBJq02brc///D2hGpYQrJ5DwAM2e4kmXRFNW90xptA0Qr7iLRjDK/zFWUwwwxS21x1NNIi+xAo6QiRUmOPvV0QCyIpUdvcHIvMF1LNMrizX2JTO6dLIWDK7A8I3chh7p0ckNM+DPB1ncs1YIkncIlf+L7v3Qo6Xs11aKkpHaPLFuWOyiiyjyUr8cqWfmGvh4d5efJENLoNr8gTzw+Hw2m3hZ3qYa/wffJDYumnV/ZOVQTO8hruOwPlDRlMOiPLIVFrGnGvoG5L9iVmICya6vJpeZL/QszzBUzmXhiIgAAAABJRU5ErkJggg==',
+    leftItemCB: function () {
+      alert('You click left item.');
+    }
+  });
+</script>
+
+<h3>10. Marquee (show right item):</h3>
+<div class="J-marquee-10"></div>
+<script>
+  $.hMarquee.marquee({
+    el: $('.J-marquee-10'),
+    externalClass: 'marquee',
+    list: listObj,
+    linkTextField: 'content',
+    linkUrlField: 'link',
+    rightItem: true,
+    rightItemImg: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAaCAMAAACTisy7AAAAeFBMVEUAAAD/gFX2eVL/k2T1eFH1eVL2eVH1eVL6fVT/jnL2eFH1eVH2eVH/gVf2eVH2eFH2eFL2eFH2eVH2eVT2eVH2eVH2eVH1elL3elT4eVP3elP4e1X2eFL2eVH2eVL2eVL2elL2eVL3eVL3elT2eVH3eFP3eVL2eFE7fwK6AAAAJ3RSTlMADJEFnbX6txkD8c+lD9mxr/fkOcOZiYRORDMkyLuUdnFlYD+te3o7tCQhAAAA6ElEQVQoz5WS2XKDMAxFBQ7GNmDWBJq02brc///D2hGpYQrJ5DwAM2e4kmXRFNW90xptA0Qr7iLRjDK/zFWUwwwxS21x1NNIi+xAo6QiRUmOPvV0QCyIpUdvcHIvMF1LNMrizX2JTO6dLIWDK7A8I3chh7p0ckNM+DPB1ncs1YIkncIlf+L7v3Qo6Xs11aKkpHaPLFuWOyiiyjyUr8cqWfmGvh4d5efJENLoNr8gTzw+Hw2m3hZ3qYa/wffJDYumnV/ZOVQTO8hruOwPlDRlMOiPLIVFrGnGvoG5L9iVmICya6vJpeZL/QszzBUzmXhiIgAAAABJRU5ErkJggg==',
+    rightItemCB: function () {
+      alert('You click right item.');
+    }
+  });
+</script>
+
+<h3>11. Marquee (2s delay to show, then 10s to hide):</h3>
+<div class="J-marquee-11"></div>
+<script>
+  var marquee11 = $.hMarquee.marquee({
+    el: $('.J-marquee-11'),
+    externalClass: 'marquee',
+    list: listObj,
+    linkTextField: 'content',
+    linkUrlField: 'link',
+    startVisibility: false
+  });
+
+  setTimeout(function () {
+    $.hMarquee.show(marquee11);
+  }, 2000);
+
+  setTimeout(function () {
+    $.hMarquee.hide(marquee11);
+  }, 12000);
+</script>
+
+<h3>12. Notification:</h3>
+<div class="J-marquee-12"></div>
+<script>
+  $.hMarquee.notification({
+    el: $('.J-marquee-12'),
+    externalClass: 'marquee',
+    noticeText: noticeTextLong,
+    onclick: function () {
+      alert('You click this.');
+    }
+  });
+</script>
+
+<h3>13. Notification (leftItemCB and onclick):</h3>
+<div class="J-marquee-13"></div>
+<script>
+  $.hMarquee.notification({
+    el: $('.J-marquee-13'),
+    externalClass: 'marquee',
+    noticeText: noticeTextLong,
+    onclick: function () {
+      alert('You click this.');
+    },
+    leftItem: true,
+    leftItemImg: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAaCAMAAACTisy7AAAAeFBMVEUAAAD/gFX2eVL/k2T1eFH1eVL2eVH1eVL6fVT/jnL2eFH1eVH2eVH/gVf2eVH2eFH2eFL2eFH2eVH2eVT2eVH2eVH2eVH1elL3elT4eVP3elP4e1X2eFL2eVH2eVL2eVL2elL2eVL3eVL3elT2eVH3eFP3eVL2eFE7fwK6AAAAJ3RSTlMADJEFnbX6txkD8c+lD9mxr/fkOcOZiYRORDMkyLuUdnFlYD+te3o7tCQhAAAA6ElEQVQoz5WS2XKDMAxFBQ7GNmDWBJq02brc///D2hGpYQrJ5DwAM2e4kmXRFNW90xptA0Qr7iLRjDK/zFWUwwwxS21x1NNIi+xAo6QiRUmOPvV0QCyIpUdvcHIvMF1LNMrizX2JTO6dLIWDK7A8I3chh7p0ckNM+DPB1ncs1YIkncIlf+L7v3Qo6Xs11aKkpHaPLFuWOyiiyjyUr8cqWfmGvh4d5efJENLoNr8gTzw+Hw2m3hZ3qYa/wffJDYumnV/ZOVQTO8hruOwPlDRlMOiPLIVFrGnGvoG5L9iVmICya6vJpeZL/QszzBUzmXhiIgAAAABJRU5ErkJggg==',
+    leftItemCB: function (e) {
+      alert('You click left item.');
+      e.stopPropagation();
+    }
+  });
+</script>
+
+<h3>14. NotificationOnce:</h3>
+<div class="J-marquee-14"></div>
+<script>
+  $.hMarquee.notificationOnce({
+    el: $('.J-marquee-14'),
+    externalClass: 'marquee',
+    noticeText: noticeTextLong,
+    onclick: function () {
+      alert('You click this.');
+    }
+  });
+</script>
+
+<h3>15. NotificationOnce (too short to scroll, but always scroll default):</h3>
+<div class="J-marquee-15"></div>
+<script>
+  $.hMarquee.notificationOnce({
+    el: $('.J-marquee-15'),
+    externalClass: 'marquee',
+    noticeText: noticeTextShort,
+    onclick: function () {
+      alert('You click this.');
+    }
+  });
+</script>
+
+<h3>16. NotificationOnce (hide -> show -> hide):</h3>
+<div class="J-marquee-16"></div>
+<script>
+  var marquee16 = $.hMarquee.notificationOnce({
+    el: $('.J-marquee-16'),
+    externalClass: 'marquee',
+    noticeText: noticeTextLong,
+    startVisibility: false,
+    onclick: function () {
+      alert('You click this.');
+    }
+  });
+
+  setTimeout(function () {
+    $.hMarquee.show(marquee16);
+  }, 2000);
+</script>
+</body>
+</html>
