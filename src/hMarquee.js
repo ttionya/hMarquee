@@ -1,7 +1,7 @@
 /**
  * Author: ttionya
  *
- * Version: 1.1.2
+ * Version: 1.1.3
  *
  * GitHub: https://github.com/ttionya/hMarquee
  *
@@ -159,8 +159,11 @@
     var styleText, backgroundText = '';
 
     if (!$('#m-marquee-style').length) {
-      styleText = '.m-marquee { position: relative; overflow: hidden; transition: all .2s ease-in; }'
+      styleText = '.m-marquee { position: relative; overflow: hidden; transition: height .2s ease-in; }'
+
         + '.m-marquee.m-hidden { height: 0 !important; }'
+        + '.m-marquee.m-hidden .m-marquee-content-scroll { -webkit-animation: none; animation: none; }'
+
         + '.m-marquee .m-marquee-inner { position: relative; }'
         + '.m-marquee.m-marquee-left .m-marquee-inner { padding-left: 40px; }'
         + '.m-marquee.m-marquee-right .m-marquee-inner { padding-right: 40px; }'
