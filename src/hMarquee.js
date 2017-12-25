@@ -150,6 +150,8 @@
           $.hMarquee.hide($c.$marqueeC);
         }, time * 1000);
       }
+
+      $c.$marqueeC.removeClass('m-no-ani');
     }, 0); // Necessary
 
     return true;
