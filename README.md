@@ -30,7 +30,9 @@ An *always scroll* notification bar for only once scrolling. Also for only one n
 
 ### `$.hMarquee.hide($el)` and `$.hMarquee.show($el)`
 
-Hide and show the marquee. You have to passing `jQuery object` or `Zepto object` as a parameter.
+Hide and show the marquee with animation. You have to passing `jQuery object` or `Zepto object` as a parameter.
+
+**Note:** Please do not add any style about `height`, `line-height`, `margin`, `padding` at marquee outer container if you want to use those two methods. You can add those styles at `m-marquee-content` instead of `m-marquee`.  
 
 More information about options. Please read [Options](#options).
 
